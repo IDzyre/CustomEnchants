@@ -1,0 +1,45 @@
+main: me.Dzyre.customEnchants.Main
+name: CustomEnchants
+author: Dzyre
+version: 1.0.01
+api-version: 1.15
+
+commands:
+  explevels:
+    usage: /<command>
+  Telepathy:
+    usage: /<command>
+  InstantGrow:
+    usage: /<command>
+  detonate:
+    usage: /<command>
+  autosmelt:
+    usage: /<command>
+  treefeller:
+    usage: /<command>
+  swordeffects:
+    usage: /<command>
+  lifesteal:
+    usage: /<command>
+  enchants:
+    usage: /<command>
+  minelight:
+    usage: /<command>
+  veinmine:
+    usage: /<command>
+  expboost:
+    usage: /<command>
+  silkspawners:
+    usage: /<command>
+  place:
+    usage: /<command>
+  entityshooter:
+    usage: /<command>
+  beheading:
+    usage: /<command>
+  cultivate:
+    usage: /<command>    
+  anvil:
+    usage: /<command>
+  bunnyhop:
+    usage: /<command>
