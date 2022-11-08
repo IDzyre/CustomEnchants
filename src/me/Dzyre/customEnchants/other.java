@@ -1,7 +1,33 @@
 package me.Dzyre.customEnchants;
 
-public class other implements Listener{
+import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
+import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
+import org.bukkit.World.Environment;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.data.Ageable;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerExpChangeEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerToggleFlightEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
+public class other implements Listener {
 
 	@EventHandler
 	public void setFly(PlayerMoveEvent e) {
@@ -24,7 +50,7 @@ public class other implements Listener{
 						&& ((Player) event.getEntity()).getInventory().getBoots().hasItemMeta()) {
 					if (((Player) event.getEntity()).getInventory().getBoots().getItemMeta()
 							.hasEnchant(CustomEnchants.BUNNYHOP)) {
-						if(!((Player) event.getEntity()).getAllowFlight())
+						if (!((Player) event.getEntity()).getAllowFlight())
 							event.setCancelled(true);
 
 					}
@@ -45,7 +71,8 @@ public class other implements Listener{
 					event.setCancelled(true);
 					p.setFlying(false);
 					p.setAllowFlight(false);
-					event.getPlayer().getWorld().playSound(event.getPlayer().getLocation(), Sound.ENTITY_BLAZE_SHOOT, 1, 1);
+					event.getPlayer().getWorld().playSound(event.getPlayer().getLocation(), Sound.ENTITY_BLAZE_SHOOT, 1,
+							1);
 					event.getPlayer().getWorld().spawnParticle(Particle.LAVA, event.getPlayer().getLocation(), 25);
 					event.getPlayer().setVelocity(p.getLocation().getDirection().setY(1.4));
 				}
@@ -139,7 +166,7 @@ public class other implements Listener{
 			return;
 		}
 		if (player.getLocation().getBlock().getRelative(0, 1, 0).getLightFromBlocks() > 5)
-			
+
 			return;
 		if (player.getLocation().getBlock().getRelative(0, -1, 0).getType().equals(Material.AIR)) {
 			return;
@@ -151,7 +178,7 @@ public class other implements Listener{
 		if ((event.getPlayer().getGameMode().equals(GameMode.CREATIVE)
 				|| (event.getPlayer().getGameMode().equals(GameMode.SPECTATOR))))
 			return;
-		
+
 		player.getLocation().getBlock().setType(Material.TORCH);
 		player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 600, 100));
 	}
@@ -208,9 +235,25 @@ public class other implements Listener{
 
 		}
 	}
-
-
-
+/*
+	@EventHandler
+	public void ricochet(ProjectileHitEvent event) {
+		if(!(event.getHitEntity() instanceof Player)) {
+			return;
+		}
+		Player player = (Player) event.getHitEntity();
+		if(!(player.getInventory().getItemInMainHand().getType().equals(Material.SHIELD)
+				||  player.getInventory().getItemInOffHand().getType().equals(Material.SHIELD))) {
+			return;
+		}
+		
+		if(player.isBlocking()) {
+			Vector velocity = event.getEntity().getVelocity();
+			event.getEntity().setVelocity(velocity.add(new Vector(0, 0.1, 0)));
+			event.getEntity().setBounce(false);
+		}
+	}
+	*/
 	@EventHandler
 	public void hoeGround(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
@@ -447,6 +490,5 @@ public class other implements Listener{
 		player.getInventory().getItemInMainHand().setItemMeta(itemMeta);
 
 	}
-
 
 }

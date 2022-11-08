@@ -31,7 +31,7 @@ commands:
     usage: /<command>
   silkspawners:
     usage: /<command>
-  place:
+  healthboost:
     usage: /<command>
   entityshooter:
     usage: /<command>

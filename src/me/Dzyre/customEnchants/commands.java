@@ -1,14 +1,25 @@
 package me.Dzyre.customEnchants ;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 public class commands implements CommandExecutor {
+
 public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
     if (label.equals("anvil")) {
         Player player = (Player) sender;
-        if (anvil.getViewers().isEmpty()) {
-            player.openInventory(anvil);
+        if (inventories.anvil.getViewers().isEmpty()) {
+            player.openInventory(inventories.anvil);
             return true;
         } else
-            player.sendMessage("Please wait for " + anvil.getViewers().get(0).getName());
+            player.sendMessage("Please wait for " + inventories.anvil.getViewers().get(0).getName());
         return true;
     }
 
@@ -369,7 +380,7 @@ public boolean onCommand(CommandSender sender, Command cmd, String label, String
             item.setItemMeta(meta);
             return true;
         }
-        if (label.equalsIgnoreCase("entityshooter")) {
+        if (label.equalsIgnoreCase("entityshooter")) {	
             if (!(sender instanceof Player)) {
                 return true;
             }
@@ -391,7 +402,7 @@ public boolean onCommand(CommandSender sender, Command cmd, String label, String
             item.setItemMeta(meta);
             return true;
         }
-        if (label.equalsIgnoreCase("place")) {
+        if (label.equalsIgnoreCase("healthboost")) {
             if (!(sender instanceof Player)) {
                 return true;
             }

@@ -1,9 +1,37 @@
 package me.Dzyre.customEnchants;
 
+import java.util.Random;
+
+import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
+import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Cat;
+import org.bukkit.entity.Chicken;
+import org.bukkit.entity.Creeper;
+import org.bukkit.entity.EnderPearl;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Snowball;
+import org.bukkit.entity.TNTPrimed;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityShootBowEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.Vector;
+
 public class weapons implements Listener{
-
-
-    
 	@EventHandler
 	public void treeFeller(BlockBreakEvent event) {
 		Player player = (Player) event.getPlayer();
@@ -25,15 +53,15 @@ public class weapons implements Listener{
 		}
 		if ((!event.getPlayer().getInventory().getItemInMainHand().getItemMeta().hasEnchant(CustomEnchants.TELEPATHY))
 				|| (event.getPlayer().getInventory().firstEmpty() == -1)) {
-			checkNearBlocks(event.getBlock(), event.getPlayer().getInventory().getItemInMainHand(), event.getBlock(),
+			pickaxes.checkNearBlocks(event.getBlock(), event.getPlayer().getInventory().getItemInMainHand(), event.getBlock(),
 					player);
 		} else {
-			checkNearBlocks(event.getBlock(), event.getPlayer().getInventory().getItemInMainHand(), event.getBlock(),
+			pickaxes.checkNearBlocks(event.getBlock(), event.getPlayer().getInventory().getItemInMainHand(), event.getBlock(),
 					player);
 
 		}
-		int count = nearBlocks.size();
-		nearBlocks.clear();
+		int count = pickaxes.nearBlocks.size();
+		pickaxes.nearBlocks.clear();
 		ItemStack itemStack = new ItemStack(player.getInventory().getItemInMainHand());
 		Damageable itemDamage = (Damageable) itemStack.getItemMeta();
 		ItemMeta itemMeta = itemStack.getItemMeta();
@@ -75,31 +103,59 @@ public class weapons implements Listener{
 		Random rand = new Random();
 		int upperbound = 9;
 		int int_random = rand.nextInt(upperbound);
+		if(player.hasPotionEffect(PotionEffectType.HEALTH_BOOST)) {
 		switch (int_random) {
 		case 1:
-			if (player.getHealth() < player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getDefaultValue() - 1.0)
+			if (player.getHealth() < player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()+2*(player.getPotionEffect(PotionEffectType.HEALTH_BOOST).getAmplifier()) - 1.0)
 				player.setHealth(player.getHealth() + 0.5);
 			else
-				player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getDefaultValue());
+				player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + 2*(player.getPotionEffect(PotionEffectType.HEALTH_BOOST).getAmplifier()));
 			return;
 		case 2:
-			if (player.getHealth() < player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getDefaultValue() - 2.0)
+			if (player.getHealth() < (player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + 2*(player.getPotionEffect(PotionEffectType.HEALTH_BOOST).getAmplifier())) - 2.0)
 				player.setHealth(player.getHealth() + 2.0);
 			else
-				player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getDefaultValue());
+				player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + 2*(player.getPotionEffect(PotionEffectType.HEALTH_BOOST).getAmplifier()));
 			return;
 		case 3:
-			if (player.getHealth() < player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getDefaultValue() - 3.0)
+			if (player.getHealth() < (player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + 2*(player.getPotionEffect(PotionEffectType.HEALTH_BOOST).getAmplifier()))  - 3.0)
 				player.setHealth(player.getHealth() + 3.0);
 			else
-				player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getDefaultValue());
+				player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + 2*(player.getPotionEffect(PotionEffectType.HEALTH_BOOST).getAmplifier()));
 			return;
 
 		default:
 			return;
 		}
+		}
+		else {
+			switch (int_random) {
+			case 1:
+				if (player.getHealth() < player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() - 1.0)
+					player.setHealth(player.getHealth() + 0.5);
+				else
+					player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+				return;
+			case 2:
+				if (player.getHealth() < player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() - 2.0)
+					player.setHealth(player.getHealth() + 2.0);
+				else
+					player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+				return;
+			case 3:
+				if (player.getHealth() < player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() - 3.0)
+					player.setHealth(player.getHealth() + 3.0);
+				else
+					player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+				return;
+
+			default:
+				return;
+			}
+		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@EventHandler
 	public static void beheading(EntityDeathEvent event) {
 		if (!(event.getEntity().getKiller() instanceof Player))

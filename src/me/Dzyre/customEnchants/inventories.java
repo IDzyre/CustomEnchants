@@ -1,9 +1,27 @@
 package me.Dzyre.customEnchants;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.enchantment.EnchantItemEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.inventory.GrindstoneInventory;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
 public class inventories implements Listener{
-
-
-
+	public static Inventory anvil = Bukkit.createInventory(null, 9, ChatColor.GOLD + "" + ChatColor.BOLD + "Combine");
+	
 	public void createAnvilInventory() {
 		ItemStack fill = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
 		anvil.setItem(0, fill);
@@ -435,10 +453,6 @@ public class inventories implements Listener{
 	@EventHandler
 	public void giveAnvilItem(InventoryClickEvent event) {
 		if ((event.getInventory().equals(anvil))) {
-			if (event.getCursor() == null) {
-				event.setCancelled(true);
-				return;
-			}
 			Player player = (Player) event.getWhoClicked();
 			if (event.getCurrentItem() != null) {
 				if (event.getCurrentItem().equals(event.getInventory().getItem(6))) {
@@ -457,8 +471,6 @@ public class inventories implements Listener{
 					player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_USE, 10, 10);
 					event.getInventory().setItem(2, null);
 					event.getInventory().setItem(4, null);
-					player.getInventory().addItem(event.getCurrentItem());
-					player.closeInventory();
 				}
 
 				if (event.getCurrentItem() != null
@@ -478,18 +490,22 @@ public class inventories implements Listener{
 	@EventHandler
 	public void onClick(InventoryClickEvent event) {
 		if ((event.getInventory().equals(anvil))) {
-			if (event.getOldCursor() == null) {
-				event.setCancelled(true);
+			if (event.getCurrentItem() == null) {
 				return;
+			}
+			if(!(event.getCurrentItem().getType().equals(Material.GREEN_STAINED_GLASS_PANE) 
+					|| event.getCurrentItem().getType().equals(Material.GRAY_STAINED_GLASS_PANE))){
+				if(event.getSlot() != 6)
+				event.getInventory().setItem(6, null);
 			}
 			if(!event.getCurrentItem().getType().equals(Material.GREEN_STAINED_GLASS_PANE)){
 				return;
 			}
 			Player player = (Player) event.getWhoClicked();
 
-			if (event.getInventory().getItem(2) != null && event.getInventorySlots().contains(4)) {
+			if (event.getInventory().getItem(2) != null && event.getInventory().getItem(4) != null) {
 				ItemStack item1 = event.getInventory().getItem(2);
-				ItemStack item2 = event.getOldCursor();
+				ItemStack item2 = event.getInventory().getItem(4);
 				if (item1.getType() != item2.getType()) {
 					player.sendMessage("Please use the same item");
 					return;
@@ -497,7 +513,7 @@ public class inventories implements Listener{
 				ItemStack result = new ItemStack(event.getInventory().getItem(2));
 				if (item2.hasItemMeta()) {
 					result = addEnchants(item1, item2, result);
-					result.addUnsafeEnchantments(event.getOldCursor().getEnchantments());
+					result.addUnsafeEnchantments(item2.getEnchantments());
 					event.getInventory().setItem(6, result);
 
 					return;
