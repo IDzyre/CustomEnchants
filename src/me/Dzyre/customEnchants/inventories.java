@@ -20,9 +20,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class inventories implements Listener {
-  public static Inventory anvil = Bukkit.createInventory(null, 9, ChatColor.GOLD + "" + "Combine");
 
-  public void createAnvilInventory() {
+  public Inventory createAnvilInventory() {
+    public static Inventory anvil = Bukkit.createInventory(null, 9, ChatColor.GOLD + "anvil");
     ItemStack fill = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
     anvil.setItem(0, fill);
     anvil.setItem(1, fill);
@@ -37,6 +37,7 @@ public class inventories implements Listener {
     anvil.setItem(6, null);
     anvil.setItem(7, fill);
     anvil.setItem(8, fill);
+    return anvil;
   }
 
   @EventHandler
@@ -282,7 +283,7 @@ public class inventories implements Listener {
 
   @EventHandler
   public void giveAnvilItem(InventoryClickEvent event) {
-    if ((event.getInventory().equals(anvil))) {
+    if ((event.getInventory().getView().getTitle().contains("anvil"))) {
       Player player = (Player) event.getWhoClicked();
       if (event.getCurrentItem() != null) {
         if (event.getCurrentItem().equals(event.getInventory().getItem(6))) {
@@ -322,7 +323,7 @@ public class inventories implements Listener {
 
   @EventHandler
   public void anvilItemClick(InventoryClickEvent event) {
-    if ((event.getInventory().equals(anvil))) {
+    if ((event.getInventory().getView().getTitle().contains("anvil"))) {
       if (event.getCurrentItem() == null) {
         return;
       }
@@ -358,7 +359,7 @@ public class inventories implements Listener {
 
   @EventHandler
   public void closeAnvil(InventoryCloseEvent event) {
-    if (event.getInventory().equals(anvil)) {
+    if (event.getInventory().getView().getTitle().contains("anvil")) {
       ItemStack item1 = event.getInventory().getItem(2);
       ItemStack item2 = event.getInventory().getItem(4);
       if (item1 != null) {

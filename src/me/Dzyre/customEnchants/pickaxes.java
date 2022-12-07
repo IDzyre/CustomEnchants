@@ -114,7 +114,6 @@ public class pickaxes implements Listener {
 		if (player.getInventory().getItemInMainHand().getItemMeta().hasEnchant(CustomEnchants.AUTOSMELT)) {
 			
 			if (block.getType().name().toLowerCase().contains("gold_ore")) {
-				
 				String s = (block.getDrops(player.getInventory().getItemInMainHand()).toArray()[0].toString()
 						.split(" ")[2]).charAt(0) + "";
 				if (player.getInventory().getItemInMainHand().getItemMeta().hasEnchant(CustomEnchants.TELEPATHY)) {
@@ -131,6 +130,23 @@ public class pickaxes implements Listener {
 					block.getWorld().spawnParticle(Particle.BLOCK_DUST, block.getLocation(), 12, block.getBlockData());
 					block.setType(Material.AIR);
 				}
+       else if (block.getType().name().toLowerCase().contains("copper_ore")) {
+          String s = (block.getDrops(player.getInventory().getItemInMainHand()).toArray()[0].toString()
+              .split(" ")[2]).charAt(0) + "";
+          if (player.getInventory().getItemInMainHand().getItemMeta().hasEnchant(CustomEnchants.TELEPATHY)) {
+            if (!(player.getInventory().firstEmpty() == -1)) {
+              
+              player.getInventory().addItem(new ItemStack(Material.COPPER_INGOT, Integer.parseInt(s)));
+              block.getWorld().spawnParticle(Particle.BLOCK_DUST, block.getLocation(), 12,
+                  block.getBlockData());
+              block.setType(Material.AIR);
+            }
+          } else {
+            player.getWorld().dropItemNaturally(block.getLocation(),
+                (new ItemStack(Material.COPPER_INGOT, Integer.parseInt(s))));
+            block.getWorld().spawnParticle(Particle.BLOCK_DUST, block.getLocation(), 12, block.getBlockData());
+            block.setType(Material.AIR);
+          }
 			} else if (block.getType().name().toLowerCase().contains("iron_ore")) {
 				String s = (block.getDrops(player.getInventory().getItemInMainHand()).toArray()[0].toString()
 						.split(" ")[2]).charAt(0) + "";
@@ -438,8 +454,8 @@ public class pickaxes implements Listener {
 			return;
 		if (event.getBlock().getState() instanceof Container)
 			return;
-		if (!((event.getBlock().getType().equals(Material.IRON_ORE))
-				|| (event.getBlock().getType().equals(Material.GOLD_ORE)))) {
+		if (!((event.getBlock().getType().name().toLowerCase().contains("iron_ore"))
+				|| (event.getBlock().getType().name().toLowerCase().contains("gold_ore") 	|| (event.getBlock().getType().name().toLowerCase().contains("copper_ore")))) {
 			return;
 		}
 
@@ -447,7 +463,7 @@ public class pickaxes implements Listener {
 		Block block = event.getBlock();
 		if ((!event.getPlayer().getInventory().getItemInMainHand().getItemMeta().hasEnchant(CustomEnchants.TELEPATHY))
 				|| (event.getPlayer().getInventory().firstEmpty() == -1)) {
-			if ((event.getBlock().getType().equals(Material.IRON_ORE))) {
+			if ((event.getBlock().getType().name().toLowerCase().contains("iron_ore"))) {
 				String s = (event.getBlock().getDrops(event.getPlayer().getInventory().getItemInMainHand()).toArray()[0]
 						.toString().split(" ")[2]).charAt(0) + "";
 				event.getPlayer().getWorld().dropItemNaturally(block.getLocation(),
@@ -455,19 +471,32 @@ public class pickaxes implements Listener {
 
 				return;
 			}
-			if (event.getBlock().getType().equals(Material.GOLD_ORE)) {
+			if (event.getBlock().getType().name().toLowerCase().contains("gold_ore")) {
 				String s = (event.getBlock().getDrops(event.getPlayer().getInventory().getItemInMainHand()).toArray()[0]
 						.toString().split(" ")[2]).charAt(0) + "";
 				event.getPlayer().getWorld().dropItemNaturally(block.getLocation(),
 						(new ItemStack(Material.GOLD_INGOT, Integer.parseInt(s))));
 				return;
 			}
-		} else if (event.getBlock().getType().equals(Material.GOLD_ORE)) {
+      if (event.getBlock().getType().name().toLowerCase().contains("copper_ore")) {
+				String s = (event.getBlock().getDrops(event.getPlayer().getInventory().getItemInMainHand()).toArray()[0]
+						.toString().split(" ")[2]).charAt(0) + "";
+				event.getPlayer().getWorld().dropItemNaturally(block.getLocation(),
+						(new ItemStack(Material.COPPER_INGOT, Integer.parseInt(s))));
+				return;
+			}
+		} else if ((event.getBlock().getType().name().toLowerCase().contains("gold_ore"))) {
 			String s = (event.getBlock().getDrops(event.getPlayer().getInventory().getItemInMainHand()).toArray()[0]
 					.toString().split(" ")[2]).charAt(0) + "";
 			player.getInventory().addItem((new ItemStack(Material.GOLD_INGOT, Integer.parseInt(s))));
 			return;
-		} else if ((event.getBlock().getType().equals(Material.IRON_ORE))) {
+      else if ((event.getBlock().getType().name().toLowerCase().contains("copper_ore"))) {
+        String s = (event.getBlock().getDrops(event.getPlayer().getInventory().getItemInMainHand()).toArray()[0]
+            .toString().split(" ")[2]).charAt(0) + "";
+        player.getInventory().addItem((new ItemStack(Material.COPPER_INGOT, Integer.parseInt(s))));
+        return;
+      }
+		} else if ((event.getBlock().getType().name().toLowerCase().contains("iron_ore"))) {
 			String s = (event.getBlock().getDrops(event.getPlayer().getInventory().getItemInMainHand()).toArray()[0]
 					.toString().split(" ")[2]).charAt(0) + "";
 			player.getInventory().addItem((new ItemStack(Material.IRON_INGOT, Integer.parseInt(s))));

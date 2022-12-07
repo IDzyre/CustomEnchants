@@ -15,12 +15,8 @@ public class commands implements CommandExecutor {
 public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
     if (label.equals("anvil")) {
         Player player = (Player) sender;
-        if (inventories.anvil.getViewers().isEmpty()) {
-            player.openInventory(inventories.anvil);
+            player.openInventory(inventories.createAnvilInventory());
             return true;
-        } else
-            player.sendMessage("Please wait for " + inventories.anvil.getViewers().get(0).getName());
-        return true;
     }
 
     if (label.equalsIgnoreCase("enchants")) {
