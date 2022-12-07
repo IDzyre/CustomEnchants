@@ -13,6 +13,7 @@ public class Main extends JavaPlugin implements Listener, CommandExecutor {
 		this.getServer().getPluginManager().registerEvents(new weapons(), this);
 		this.getServer().getPluginManager().registerEvents(new other(), this);
 		this.getServer().getPluginManager().registerEvents(new inventories(), this);
+		this.getServer().getPluginManager().registerEvents(new SetDrops(), this);
 		inventories inv = new inventories();
 		CustomEnchants.register();
 		inv.createAnvilInventory();
@@ -23,7 +24,7 @@ public class Main extends JavaPlugin implements Listener, CommandExecutor {
 		this.getCommand("minelight").setExecutor(new commands());
 		this.getCommand("veinmine").setExecutor(new commands());
 		this.getCommand("treefeller").setExecutor(new commands());
-		//this.getCommand("enderport").setExecutor(new commands());
+		this.getCommand("enderport").setExecutor(new commands());
 		this.getCommand("lifesteal").setExecutor(new commands());
 		this.getCommand("instantgrow").setExecutor(new commands());
 		this.getCommand("cultivate").setExecutor(new commands());
@@ -34,6 +35,7 @@ public class Main extends JavaPlugin implements Listener, CommandExecutor {
 		this.getCommand("bunnyhop").setExecutor(new commands());
 		this.getCommand("entityshooter").setExecutor(new commands());
 		this.getCommand("anvil").setExecutor(new commands());
+	
 	}
 
 	@Override

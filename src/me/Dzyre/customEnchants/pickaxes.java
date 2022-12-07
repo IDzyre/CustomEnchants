@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -40,8 +41,6 @@ public class pickaxes implements Listener {
 			return;
 		if (!event.getPlayer().getInventory().getItemInMainHand().getItemMeta().hasEnchant(CustomEnchants.TELEPATHY))
 			return;
-//		if (event.getPlayer().getInventory().getItemInMainHand().getItemMeta().hasEnchant(CustomEnchants.VEINMINER))
-//			return;
 		if (event.getPlayer().getInventory().getItemInMainHand().getItemMeta().hasEnchant(CustomEnchants.DETONATE))
 			return;
 		if (event.getPlayer().getInventory().getItemInMainHand().getItemMeta().hasEnchant(CustomEnchants.AUTOSMELT)
@@ -64,18 +63,21 @@ public class pickaxes implements Listener {
 
 	}
 
+	public void telepathy(Player player, Block block) {
+		Collection<ItemStack> drops = block.getDrops(player.getInventory().getItemInMainHand());
+		if (drops.isEmpty())
+			return;
+		player.getInventory().addItem(drops.iterator().next());
+	}
+	
 	public boolean isPlaced(Location loc, Player player) {
-
 		if (stopJosh.get(loc) == null) {
-//			player.sendMessage("is null");
 			return false;
 		}
 		if (stopJosh.get(loc) != null) {
-//			player.sendMessage("is nut null");
 			stopJosh.remove(loc);
 			return true;
 		}
-
 		return true;
 	}
 
@@ -110,11 +112,14 @@ public class pickaxes implements Listener {
 		checkNearBlocks(block.getRelative(BlockFace.WEST), pickaxe, originalBlock, player);
 
 		if (player.getInventory().getItemInMainHand().getItemMeta().hasEnchant(CustomEnchants.AUTOSMELT)) {
-			if (block.getType().equals(Material.GOLD_ORE)) {
+			
+			if (block.getType().name().toLowerCase().contains("gold_ore")) {
+				
 				String s = (block.getDrops(player.getInventory().getItemInMainHand()).toArray()[0].toString()
 						.split(" ")[2]).charAt(0) + "";
 				if (player.getInventory().getItemInMainHand().getItemMeta().hasEnchant(CustomEnchants.TELEPATHY)) {
 					if (!(player.getInventory().firstEmpty() == -1)) {
+						
 						player.getInventory().addItem(new ItemStack(Material.GOLD_INGOT, Integer.parseInt(s)));
 						block.getWorld().spawnParticle(Particle.BLOCK_DUST, block.getLocation(), 12,
 								block.getBlockData());
@@ -126,7 +131,7 @@ public class pickaxes implements Listener {
 					block.getWorld().spawnParticle(Particle.BLOCK_DUST, block.getLocation(), 12, block.getBlockData());
 					block.setType(Material.AIR);
 				}
-			} else if (block.getType().equals(Material.IRON_ORE)) {
+			} else if (block.getType().name().toLowerCase().contains("iron_ore")) {
 				String s = (block.getDrops(player.getInventory().getItemInMainHand()).toArray()[0].toString()
 						.split(" ")[2]).charAt(0) + "";
 				if (player.getInventory().getItemInMainHand().getItemMeta().hasEnchant(CustomEnchants.TELEPATHY)) {
@@ -158,16 +163,27 @@ public class pickaxes implements Listener {
 		itemMeta = pickaxe.getItemMeta();
 
 		int damage = itemDamage.getDamage();
-		int subdmg = 0;
+		int subdmg = 1;
 		if (itemMeta instanceof Damageable) {
 			if (player.getInventory().getItemInMainHand().getItemMeta().hasEnchant(Enchantment.DURABILITY)) {
-				if (player.getInventory().getItemInMainHand().getItemMeta()
-						.getEnchantLevel(Enchantment.DURABILITY) == 3) {
-					subdmg = 1;
+				if(itemMeta.getEnchantLevel(Enchantment.DURABILITY) == 3) {
+				if( new Random().nextDouble() > 0.25 ) {  
+						subdmg = 0;
+					}
 				}
+				else if(itemMeta.getEnchantLevel(Enchantment.DURABILITY) == 2) {
+					if( new Random().nextDouble() > 0.33 ) {  
+							subdmg = 0;
+						}
+					}
+				else if(itemMeta.getEnchantLevel(Enchantment.DURABILITY) == 1) {
+					if( new Random().nextDouble() > 0.5 ) {  
+							subdmg = 0;
+						}
+					}
 			}
 		}
-		((Damageable) itemMeta).setDamage((damage + (1 - subdmg)));
+		((Damageable) itemMeta).setDamage(damage + subdmg);
 		player.getInventory().getItemInMainHand().setItemMeta(itemMeta);
 		return 0;
 	}
@@ -177,7 +193,6 @@ public class pickaxes implements Listener {
 		if (event.getBlock().getType().equals(Material.DIAMOND_ORE)
 				|| event.getBlock().getType().equals(Material.EMERALD_ORE)) {
 			stopJosh.put(event.getBlock().getLocation(), event.getPlayer().getName());
-//			event.getPlayer().sendMessage("PLACE BLUCK");
 		}
 	}
 
@@ -221,71 +236,19 @@ public class pickaxes implements Listener {
 		if (isPlaced(event.getBlock().getLocation(), event.getPlayer())) {
 			return;
 		}
-		if ((event.getBlock().getType().equals(Material.STONE)) || (event.getBlock().getType().equals(Material.GRASS))
-				|| (event.getBlock().getType().equals(Material.DIRT))
-				|| (event.getBlock().getType().equals(Material.ICE))
-				|| (event.getBlock().getType().equals(Material.BLUE_ICE))
-				|| event.getBlock().getType().equals(Material.PACKED_ICE)
-				|| event.getBlock().getType().equals(Material.COBBLESTONE)
-				|| event.getBlock().getType().equals(Material.GLASS)
-				|| event.getBlock().getType().equals(Material.GRAY_STAINED_GLASS)
-				|| event.getBlock().getType().equals(Material.NETHERRACK))
-			return;
 		if ((event.getPlayer().getGameMode().equals(GameMode.CREATIVE)
 				|| (event.getPlayer().getGameMode().equals(GameMode.SPECTATOR))))
 			return;
 		if (event.getBlock().getState() instanceof Container)
 			return;
-		if (!(event.getBlock().getType().equals(Material.IRON_ORE)
-				|| (event.getBlock().getType().equals(Material.GOLD_ORE))
-				|| (event.getBlock().getType().equals(Material.COAL_ORE))
-				|| (event.getBlock().getType().equals(Material.DIAMOND_ORE))
-				|| (event.getBlock().getType().equals(Material.EMERALD_ORE))
-				|| (event.getBlock().getType().equals(Material.LAPIS_ORE))
-				|| (event.getBlock().getType().equals(Material.NETHER_QUARTZ_ORE))
-				|| (event.getBlock().getType().equals(Material.COPPER_ORE))
-				|| (event.getBlock().getType().equals(Material.DEEPSLATE_IRON_ORE))
-				|| (event.getBlock().getType().equals(Material.DEEPSLATE_GOLD_ORE))
-				|| (event.getBlock().getType().equals(Material.DEEPSLATE_COAL_ORE))
-				|| (event.getBlock().getType().equals(Material.DEEPSLATE_DIAMOND_ORE))
-				|| (event.getBlock().getType().equals(Material.DEEPSLATE_EMERALD_ORE))
-				|| (event.getBlock().getType().equals(Material.DEEPSLATE_LAPIS_ORE))
-				|| (event.getBlock().getType().equals(Material.DEEPSLATE_COPPER_ORE))))
+		if (!(event.getBlock().getType().name().toLowerCase().contains("ore")))
 			return;
 		event.setCancelled(true);
 		Player player = (Player) event.getPlayer();
 		Block block = event.getBlock();
-
-		checkNearBlocks(block, event.getPlayer().getInventory().getItemInMainHand(), block, player);
-
-		int count = nearBlocks.size();
 		nearBlocks.clear();
-
-		ItemStack itemStack = new ItemStack(player.getInventory().getItemInMainHand());
-		Damageable itemDamage = (Damageable) itemStack.getItemMeta();
-		ItemMeta itemMeta = itemStack.getItemMeta();
-		int damage = itemDamage.getDamage();
-		int subdmg = 1;
-
-		if (itemMeta instanceof Damageable) {
-
-			if (player.getInventory().getItemInMainHand().getItemMeta().hasEnchant(Enchantment.DURABILITY)) {
-				if (player.getInventory().getItemInMainHand().getItemMeta()
-						.getEnchantLevel(Enchantment.DURABILITY) == 1) {
-					subdmg = 2;
-				} else if (player.getInventory().getItemInMainHand().getItemMeta()
-						.getEnchantLevel(Enchantment.DURABILITY) == 2) {
-					subdmg = 3;
-				} else if (player.getInventory().getItemInMainHand().getItemMeta()
-						.getEnchantLevel(Enchantment.DURABILITY) == 3) {
-					subdmg = 4;
-				}
-			}
-		}
-		((Damageable) itemMeta).setDamage((damage + (count / subdmg)));
-		player.getInventory().getItemInMainHand().setItemMeta(itemMeta);
-		return;
-
+		checkNearBlocks(block, event.getPlayer().getInventory().getItemInMainHand(), block, player);
+		nearBlocks.clear();
 	}
 
 	public void squareDetonate(String face, Block block, int number, int count, ItemStack pickaxe, Player player) {
@@ -362,7 +325,7 @@ public class pickaxes implements Listener {
 				break;
 
 			}
-			if (block.getType() != Material.STONE) {
+			if (block.getType() != Material.STONE && block.getType() != Material.DEEPSLATE) {
 				return;
 			}
 			nearBlocks.put(block, 1);
@@ -396,7 +359,7 @@ public class pickaxes implements Listener {
 			return;
 		if (event.getBlock().getState() instanceof Container)
 			return;
-		if (!(event.getBlock().getType().equals(Material.STONE)))
+		if (!(event.getBlock().getType().equals(Material.STONE) || event.getBlock().getType().equals(Material.DEEPSLATE)))
 			return;
 		event.setCancelled(true);
 		Player player = event.getPlayer();
@@ -431,26 +394,32 @@ public class pickaxes implements Listener {
 		}
 
 		int damage = itemDamage.getDamage();
-		int subdmg = 1;
-
 		int count = nearBlocks.size();
 		nearBlocks.clear();
+		int givenDamage = count;
+		for(int i = 0; i < count; i++) {
 		if (itemMeta instanceof Damageable) {
-
 			if (player.getInventory().getItemInMainHand().getItemMeta().hasEnchant(Enchantment.DURABILITY)) {
-				if (player.getInventory().getItemInMainHand().getItemMeta()
-						.getEnchantLevel(Enchantment.DURABILITY) == 1) {
-					subdmg = 2;
-				} else if (player.getInventory().getItemInMainHand().getItemMeta()
-						.getEnchantLevel(Enchantment.DURABILITY) == 2) {
-					subdmg = 3;
-				} else if (player.getInventory().getItemInMainHand().getItemMeta()
-						.getEnchantLevel(Enchantment.DURABILITY) == 3) {
-					subdmg = 4;
+				if(itemMeta.getEnchantLevel(Enchantment.DURABILITY) == 3) {
+					if( new Random().nextDouble() > 0.25 ) {  
+							givenDamage--;
+						}
+					}
+					else if(itemMeta.getEnchantLevel(Enchantment.DURABILITY) == 2) {
+						if( new Random().nextDouble() > 0.33 ) {  
+							givenDamage--;
+							}
+						}
+					else if(itemMeta.getEnchantLevel(Enchantment.DURABILITY) == 1) {
+						if( new Random().nextDouble() > 0.5 ) {  
+							givenDamage--;
+							}
+						}
 				}
 			}
+		
 		}
-		((Damageable) itemMeta).setDamage((damage + (count / subdmg)));
+		((Damageable) itemMeta).setDamage((damage + givenDamage));
 		player.getInventory().getItemInMainHand().setItemMeta(itemMeta);
 		return;
 	}

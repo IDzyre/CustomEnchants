@@ -43,3 +43,5 @@ commands:
     usage: /<command>
   bunnyhop:
     usage: /<command>
+  enderport:
+    usage: /<command>

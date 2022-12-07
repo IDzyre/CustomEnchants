@@ -401,6 +401,27 @@ public boolean onCommand(CommandSender sender, Command cmd, String label, String
             meta.setLore(lore);
             item.setItemMeta(meta);
             return true;
+        }if (label.equalsIgnoreCase("enderport")) {	
+            if (!(sender instanceof Player)) {
+                return true;
+            }
+            Player player = (Player) sender;
+            if (player.getInventory().getItemInMainHand().getItemMeta().hasEnchant(CustomEnchants.ENDERPORT)) {
+                player.sendMessage(ChatColor.RED + "You already have that enchant!");
+                return true;
+            }
+            ItemStack item = (player.getInventory().getItemInMainHand());
+            item.addUnsafeEnchantment(CustomEnchants.ENDERPORT, 1);
+            ItemMeta meta = item.getItemMeta();
+            List<String> lore = new ArrayList<String>();
+            lore.add(ChatColor.GOLD + "" + ChatColor.BOLD + "Enderport");
+            if (meta.hasLore()) {
+                for (String l : meta.getLore())
+                    lore.add(l);
+            }
+            meta.setLore(lore);
+            item.setItemMeta(meta);
+            return true;
         }
         if (label.equalsIgnoreCase("healthboost")) {
             if (!(sender instanceof Player)) {

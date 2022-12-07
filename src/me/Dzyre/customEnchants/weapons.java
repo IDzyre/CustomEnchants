@@ -44,11 +44,7 @@ public class weapons implements Listener{
 		if ((event.getPlayer().getGameMode().equals(GameMode.CREATIVE)
 				|| (event.getPlayer().getGameMode().equals(GameMode.SPECTATOR))))
 			return;
-		if (!((event.getBlock().getType().equals(Material.ACACIA_LOG))
-				|| (event.getBlock().getType().equals(Material.SPRUCE_LOG))
-				|| (event.getBlock().getType().equals(Material.OAK_LOG))
-				|| (event.getBlock().getType().equals(Material.DARK_OAK_LOG))
-				|| (event.getBlock().getType().equals(Material.BIRCH_LOG)))) {
+		if (!((event.getBlock().getType().name().toLowerCase().contains("log")))) {
 			return;
 		}
 		if ((!event.getPlayer().getInventory().getItemInMainHand().getItemMeta().hasEnchant(CustomEnchants.TELEPATHY))
@@ -60,30 +56,8 @@ public class weapons implements Listener{
 					player);
 
 		}
-		int count = pickaxes.nearBlocks.size();
 		pickaxes.nearBlocks.clear();
-		ItemStack itemStack = new ItemStack(player.getInventory().getItemInMainHand());
-		Damageable itemDamage = (Damageable) itemStack.getItemMeta();
-		ItemMeta itemMeta = itemStack.getItemMeta();
-		int damage = itemDamage.getDamage();
-		int subdmg = 1;
-		if (itemMeta instanceof Damageable) {
-
-			if (player.getInventory().getItemInMainHand().getItemMeta().hasEnchant(Enchantment.DURABILITY)) {
-				if (player.getInventory().getItemInMainHand().getItemMeta()
-						.getEnchantLevel(Enchantment.DURABILITY) == 1) {
-					subdmg = 2;
-				} else if (player.getInventory().getItemInMainHand().getItemMeta()
-						.getEnchantLevel(Enchantment.DURABILITY) == 2) {
-					subdmg = 3;
-				} else if (player.getInventory().getItemInMainHand().getItemMeta()
-						.getEnchantLevel(Enchantment.DURABILITY) == 3) {
-					subdmg = 4;
-				}
-			}
-		}
-		((Damageable) itemMeta).setDamage((damage + (count / subdmg)));
-		player.getInventory().getItemInMainHand().setItemMeta(itemMeta);
+		new ItemStack(player.getInventory().getItemInMainHand());
 	}
 
 	@EventHandler
@@ -173,10 +147,10 @@ public class weapons implements Listener{
 				return;
 			}
 			Random rand = new Random();
-			int upperbound = 20;
+			int upperbound = 10;
 			int int_random = rand.nextInt(upperbound);
 			switch (int_random) {
-			case 10:
+			case 5:
 				Player player2 = (Player) event.getEntity();
 				ItemStack head = new ItemStack(Material.PLAYER_HEAD, 1);
 				SkullMeta meta = (SkullMeta) head.getItemMeta();
